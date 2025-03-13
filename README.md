@@ -7,13 +7,13 @@ A [Flarum](http://flarum.org) extension to serve API for trending discussions.
 ### Installation
 
 ```bash
-composer require liplum/trends
+composer require liplum/flarum-trends
 ```
 
 ### Update
 
 ```sh
-composer update liplum/trends
+composer update liplum/flarum-trends
 ```
 
 ## Usage
