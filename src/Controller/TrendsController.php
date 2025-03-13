@@ -61,11 +61,14 @@ class TrendsTodayController implements RequestHandlerInterface
 
     $data = [];
     foreach ($discussions as $discussion) {
+      // Use created_at if last_posted_at is null
+      $lastActivity = $discussion->last_posted_at ?? $discussion->created_at;
       $data[] = [
         'id' => $discussion->id,
         'title' => $discussion->title,
         'commentCount' => $discussion->comment_count,
         'createdAt' => $discussion->created_at->toIso8601String(),
+        'lastActivityAt' => $lastActivity->toIso8601String(),
         'user' => [
           'id' => $discussion->user->id,
           'username' => $discussion->user->username

@@ -1,6 +1,6 @@
 {
   "name": "liplum/trends",
-  "description": "The trending topics for Flarum",
+  "description": "The trending discussions for Flarum",
   "version": "0.1.0",
   "keywords": [
     "flarum",
@@ -27,8 +27,8 @@
     }
   ],
   "support": {
-    "issues": "https://github.com/liplum/trending-topics/issues",
-    "source": "https://github.com/liplum/trending-topics"
+    "issues": "https://github.com/liplum/flarum-trends/issues",
+    "source": "https://github.com/liplum/flarum-trends"
   },
   "autoload": {
     "psr-4": {

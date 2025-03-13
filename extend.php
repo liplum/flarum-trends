@@ -9,7 +9,7 @@ return [
   (new Extend\Routes('api'))
     ->get(
       '/trends/recent',
-      'liplum-trends.get-trends',
+      'liplum-trends.recent-trends',
       TrendsTodayController::class
     ),
 ];
