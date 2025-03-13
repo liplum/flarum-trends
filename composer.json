@@ -1,0 +1,49 @@
+{
+  "name": "liplum/trends",
+  "description": "The trending topics for Flarum",
+  "version": "0.1.0",
+  "keywords": [
+    "flarum",
+    "flarum-extension",
+    "flarum-ext",
+    "hot discussions",
+    "popular",
+    "trends",
+    "trending"
+  ],
+  "type": "flarum-extension",
+  "license": "MIT",
+  "require": {
+    "flarum/core": "^1.2",
+    "guzzlehttp/guzzle": "^7.0",
+    "ext-json": "*"
+  },
+  "authors": [
+    {
+      "name": "Liplum",
+      "homepage": "https://liplum.net/",
+      "email": "Li_plum@outlook.com",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/liplum/trending-topics/issues",
+    "source": "https://github.com/liplum/trending-topics"
+  },
+  "autoload": {
+    "psr-4": {
+      "Liplum\\Trends\\": "src/"
+    }
+  },
+  "extra": {
+    "flarum-extension": {
+      "title": "Trends",
+      "category": "feature",
+      "icon": {
+        "name": "far fa-fire-alt",
+        "backgroundColor": "#FF4500",
+        "color": "#fff"
+      }
+    }
+  }
+}
