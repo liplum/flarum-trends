@@ -1,0 +1,81 @@
+<?php
+
+namespace Liplum\Trends\Controller;
+
+use Carbon\Carbon;
+use Flarum\Discussion\DiscussionRepository;
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+/**
+ * Controller to retrieve trending discussions based on recent activity.
+ *
+ * This controller fetches discussions created within a specified recent timeframe,
+ * with a higher weight given to discussions that have received activity within a
+ * recent hot spot timeframe.
+ */
+class TrendsTodayController implements RequestHandlerInterface
+{
+  /**
+   * @var DiscussionRepository
+   */
+  protected $discussions;
+
+  /**
+   * @param DiscussionRepository $discussions
+   */
+  public function __construct(DiscussionRepository $discussions)
+  {
+    $this->discussions = $discussions;
+  }
+
+  /**
+   * Handles the request to retrieve trending discussions.
+   *
+   * @param ServerRequestInterface $request
+   * @return ResponseInterface
+   */
+  public function handle(ServerRequestInterface $request): ResponseInterface
+  {
+    // Parse query parameters with default values
+    $queryParams = $request->getQueryParams();
+    $recentDays = isset($queryParams['recentDays']) ? (int) $queryParams['recentDays'] : 7;
+    $discussionLimit = isset($queryParams['limit']) ? (int) $queryParams['limit'] : 10;
+    $hotSpotHours = isset($queryParams['hotSpotHours']) ? (int) $queryParams['hotSpotHours'] : 24;
+
+    // Calculate time thresholds
+    $recentThreshold = Carbon::now()->subDays($recentDays);
+    $hotSpotThreshold = Carbon::now()->subHours($hotSpotHours);
+
+    // Query trending discussions
+    $discussions = $this->discussions->query()
+      ->whereNull('hidden_at')
+      ->where('is_private', 0)
+      ->where('is_locked', 0)
+      ->where('created_at', '>=', $recentThreshold)
+      ->orderByRaw('CASE WHEN last_posted_at >= ? THEN comment_count * 2 ELSE comment_count END DESC', [$hotSpotThreshold])
+      ->take($discussionLimit)
+      ->get();
+
+    $data = [];
+    foreach ($discussions as $discussion) {
+      $data[] = [
+        'id' => $discussion->id,
+        'title' => $discussion->title,
+        'commentCount' => $discussion->comment_count,
+        'createdAt' => $discussion->created_at->toIso8601String(),
+        'user' => [
+          'id' => $discussion->user->id,
+          'username' => $discussion->user->username
+        ]
+      ];
+    }
+
+    $response = new Response(200);
+    $response->getBody()->write(json_encode($data));
+    $response->withHeader('Content-Type', 'application/json');
+    return $response;
+  }
+}
