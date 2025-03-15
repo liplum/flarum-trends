@@ -39,6 +39,7 @@ The API returns a JSON array of discussion objects. Each discussion object conta
 * **`commentCount` (integer):** The number of comments in the discussion.
 * **`createdAt` (string):** The creation time of the discussion in ISO 8601 format.
 * **`lastActivityAt` (string):** The last activity time of the discussion in ISO 8601 format, using the created time if the last posted time is null.
+* **`shareUrl` (string):** The URL to share the discussion.
 * **`user` (object):** An object containing the user's ID and username.
   * **`id` (integer):** The user ID.
   * **`username` (string):** The username.
