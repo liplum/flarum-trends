@@ -41,8 +41,8 @@
       "category": "feature",
       "icon": {
         "name": "fas fa-fire-alt",
-        "backgroundColor": "#FF4500",
-        "color": "#fff"
+        "backgroundColor": "#ffffff",
+        "color": "#FF4500"
       }
     }
   }
