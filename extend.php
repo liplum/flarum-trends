@@ -2,14 +2,14 @@
 
 namespace Liplum\Trends;
 
+use Liplum\Trends\Controller\TrendsRecentController;
 use Flarum\Extend;
-use Liplum\Trends\Controller\TrendsTodayController;
 
 return [
   (new Extend\Routes('api'))
     ->get(
       '/trends/recent',
       'liplum-trends.recent-trends',
-      TrendsTodayController::class
+      TrendsRecentController::class
     ),
 ];

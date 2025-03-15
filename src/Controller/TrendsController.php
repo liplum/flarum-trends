@@ -17,7 +17,7 @@ use Illuminate\Support\Arr;
  * with a higher weight given to discussions that have received activity within a
  * recent hot spot timeframe.
  */
-class TrendsTodayController implements RequestHandlerInterface
+class TrendsRecentController implements RequestHandlerInterface
 {
   /**
    * @var DiscussionRepository
@@ -27,8 +27,9 @@ class TrendsTodayController implements RequestHandlerInterface
   /**
    * @param DiscussionRepository $discussions
    */
-  public function __construct(DiscussionRepository $discussions)
-  {
+  public function __construct(
+    DiscussionRepository $discussions,
+  ) {
     $this->discussions = $discussions;
   }
 
