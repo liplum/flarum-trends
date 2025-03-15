@@ -43,6 +43,35 @@ The API returns a JSON array of discussion objects. Each discussion object conta
   * **`id` (integer):** The user ID.
   * **`username` (string):** The username.
 
+### Typing
+
+```ts
+interface TrendingDiscussionsResponse {
+  data: {
+    type: 'discussions';
+    id: string;
+    attributes: {
+      title: string;
+      commentCount: number;
+      createdAt: string;
+      lastActivityAt: string;
+      shareUrl: string;
+    };
+    relationships: {
+      user: {
+        data: {
+          type: 'users';
+          id: string;
+          attributes: {
+            username: string;
+          };
+        };
+      };
+    };
+  }[];
+}
+```
+
 ### Example Request
 
 ```http
@@ -59,6 +88,7 @@ GET /api/trends/recent?recentDays=14&limit=5&hotSpotHours=12
     "commentCount": 50,
     "createdAt": "2023-10-27T10:00:00+00:00",
     "lastActivityAt": "2023-10-27T11:30:00+00:00",
+    "shareUrl": "https://discuss.flarum.org/d/123",
     "user": {
       "id": 1,
       "username": "user1"
@@ -70,12 +100,12 @@ GET /api/trends/recent?recentDays=14&limit=5&hotSpotHours=12
     "commentCount": 30,
     "createdAt": "2023-10-26T15:30:00+00:00",
     "lastActivityAt": "2023-10-26T15:30:00+00:00",
+    "shareUrl": "https://discuss.flarum.org/d/456",
     "user": {
       "id": 2,
       "username": "user2"
     }
   },
-  // ... more discussions
 ]
 ```
 
