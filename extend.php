@@ -6,6 +6,9 @@ use Liplum\Trends\Controller\TrendsRecentController;
 use Flarum\Extend;
 
 return [
+  (new Extend\Frontend('admin'))
+    ->js(__DIR__ . '/js/dist/admin.js'),
+
   (new Extend\Routes('api'))
     ->get(
       '/trends/recent',
