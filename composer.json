@@ -40,7 +40,7 @@
       "title": "Trends",
       "category": "feature",
       "icon": {
-        "name": "far fa-fire-alt",
+        "name": "fas fa-fire-alt",
         "backgroundColor": "#FF4500",
         "color": "#fff"
       }

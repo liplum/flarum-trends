@@ -46,7 +46,7 @@ The API returns a JSON array of discussion objects. Each discussion object conta
 ### Example Request
 
 ```http
-GET /api/trends?recentDays=14&limit=5&hotSpotHours=12
+GET /api/trends/recent?recentDays=14&limit=5&hotSpotHours=12
 ```
 
 ### Example Response

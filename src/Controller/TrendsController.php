@@ -8,6 +8,7 @@ use GuzzleHttp\Psr7\Response;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Illuminate\Support\Arr;
 
 /**
  * Controller to retrieve trending discussions based on recent activity.
@@ -41,9 +42,9 @@ class TrendsTodayController implements RequestHandlerInterface
   {
     // Parse query parameters with default values
     $queryParams = $request->getQueryParams();
-    $recentDays = isset($queryParams['recentDays']) ? (int) $queryParams['recentDays'] : 7;
-    $discussionLimit = isset($queryParams['limit']) ? (int) $queryParams['limit'] : 10;
-    $hotSpotHours = isset($queryParams['hotSpotHours']) ? (int) $queryParams['hotSpotHours'] : 24;
+    $recentDays = Arr::get($queryParams, 'recentDays', 7);
+    $discussionLimit = Arr::get($queryParams, 'limit', 10);
+    $hotSpotHours = Arr::get($queryParams, 'hotSpotHours', 24);
 
     // Calculate time thresholds
     $recentThreshold = Carbon::now()->subDays($recentDays);
