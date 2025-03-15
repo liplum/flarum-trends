@@ -90,9 +90,11 @@ class TrendsRecentController implements RequestHandlerInterface
       ];
     }
 
-    $response = new Response(200);
-    $response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE));
-    $response->withHeader('Content-Type', 'application/vnd.api+json');
+    $response = new Response(
+      200,
+      ['Content-Type' => 'application/json'],
+      json_encode($data, JSON_UNESCAPED_UNICODE),
+    );
     return $response;
   }
 }
