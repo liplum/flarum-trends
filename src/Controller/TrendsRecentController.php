@@ -10,6 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Illuminate\Support\Arr;
 use Flarum\Http\UrlGenerator;
+use Flarum\Settings\SettingsRepositoryInterface;
 
 /**
  * Controller to retrieve trending discussions based on recent activity.
@@ -20,6 +21,7 @@ use Flarum\Http\UrlGenerator;
  */
 class TrendsRecentController implements RequestHandlerInterface
 {
+  private $settings;
   /**
    * @var DiscussionRepository
    */
@@ -33,9 +35,11 @@ class TrendsRecentController implements RequestHandlerInterface
    * @param DiscussionRepository $discussions
    */
   public function __construct(
+    SettingsRepositoryInterface $settings,
     DiscussionRepository $discussions,
     UrlGenerator $url,
   ) {
+    $this->settings = $settings;
     $this->discussions = $discussions;
     $this->url = $url;
   }
@@ -50,9 +54,22 @@ class TrendsRecentController implements RequestHandlerInterface
   {
     // Parse query parameters with default values
     $queryParams = $request->getQueryParams();
-    $recentDays = Arr::get($queryParams, 'recentDays', 7);
-    $discussionLimit = Arr::get($queryParams, 'limit', 10);
-    $hotSpotHours = Arr::get($queryParams, 'hotSpotHours', 24);
+    $recentDays = Arr::get(
+      $queryParams,
+      'recentDays',
+      $this->getSettings("liplum-trends.defaultRecentDays", 7),
+    );
+    $discussionLimit = Arr::get(
+      $queryParams,
+      'limit',
+      $this->getSettings("liplum-trends.defaultLimit", 10),
+
+    );
+    $hotSpotHours = Arr::get(
+      $queryParams,
+      'hotSpotHours',
+      $this->getSettings("liplum-trends.defaultHotSpotHours", 24),
+    );
 
     // Calculate time thresholds
     $recentThreshold = Carbon::now()->subDays($recentDays);
@@ -104,5 +121,10 @@ class TrendsRecentController implements RequestHandlerInterface
       json_encode($data, JSON_UNESCAPED_UNICODE),
     );
     return $response;
+  }
+
+  private function getSettings(string $key, $default = null)
+  {
+    return $this->settings->get($key, $default);
   }
 }
