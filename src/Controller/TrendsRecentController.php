@@ -79,7 +79,7 @@ class TrendsRecentController implements RequestHandlerInterface
     }
 
     $response = new Response(200);
-    $response->getBody()->write(json_encode($data));
+    $response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE));
     $response->withHeader('Content-Type', 'application/json');
     return $response;
   }
