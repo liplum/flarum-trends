@@ -61,26 +61,38 @@ class TrendsRecentController implements RequestHandlerInterface
       ->take($discussionLimit)
       ->get();
 
-    $data = [];
+    $data = [
+      'data' => []
+    ];
     foreach ($discussions as $discussion) {
       // Use created_at if last_posted_at is null
       $lastActivity = $discussion->last_posted_at ?? $discussion->created_at;
-      $data[] = [
-        'id' => $discussion->id,
-        'title' => $discussion->title,
-        'commentCount' => $discussion->comment_count,
-        'createdAt' => $discussion->created_at->toIso8601String(),
-        'lastActivityAt' => $lastActivity->toIso8601String(),
-        'user' => [
-          'id' => $discussion->user->id,
-          'username' => $discussion->user->username
+      $data['data'][] = [
+        'type' => 'discussions',
+        'id' => (string) $discussion->id,
+        'attributes' => [
+          'title' => $discussion->title,
+          'commentCount' => $discussion->comment_count,
+          'createdAt' => $discussion->created_at->toIso8601String(),
+          'lastActivityAt' => $lastActivity->toIso8601String(),
+        ],
+        'relationships' => [
+          'user' => [
+            'data' => [
+              'type' => 'users',
+              'id' => (string) $discussion->user->id,
+              'attributes' => [
+                'username' => $discussion->user->username
+              ]
+            ]
+          ]
         ]
       ];
     }
 
     $response = new Response(200);
     $response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE));
-    $response->withHeader('Content-Type', 'application/json');
+    $response->withHeader('Content-Type', 'application/vnd.api+json');
     return $response;
   }
 }
