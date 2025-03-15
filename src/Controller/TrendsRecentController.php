@@ -9,6 +9,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Illuminate\Support\Arr;
+use Flarum\Http\UrlGenerator;
 
 /**
  * Controller to retrieve trending discussions based on recent activity.
@@ -23,14 +24,20 @@ class TrendsRecentController implements RequestHandlerInterface
    * @var DiscussionRepository
    */
   protected $discussions;
+  /**
+   * @var UrlGenerator
+   */
+  protected $url;
 
   /**
    * @param DiscussionRepository $discussions
    */
   public function __construct(
     DiscussionRepository $discussions,
+    UrlGenerator $url,
   ) {
     $this->discussions = $discussions;
+    $this->url = $url;
   }
 
   /**
@@ -75,6 +82,7 @@ class TrendsRecentController implements RequestHandlerInterface
           'commentCount' => $discussion->comment_count,
           'createdAt' => $discussion->created_at->toIso8601String(),
           'lastActivityAt' => $lastActivity->toIso8601String(),
+          'shareUrl' => $this->url->to('forum')->route('discussion', ['id' => $discussion->id]),
         ],
         'relationships' => [
           'user' => [
