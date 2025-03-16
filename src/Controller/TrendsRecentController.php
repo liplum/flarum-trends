@@ -54,18 +54,18 @@ class TrendsRecentController implements RequestHandlerInterface
   {
     // Parse query parameters with default values
     $queryParams = $request->getQueryParams();
-    $recentDays = Arr::get(
+
+    $recentDays = $this->getFilteredParam(
       $queryParams,
       'recentDays',
       $this->getSettings("liplum-trends.defaultRecentDays", 7),
     );
-    $discussionLimit = Arr::get(
+    $discussionLimit = $this->getFilteredParam(
       $queryParams,
       'limit',
       $this->getSettings("liplum-trends.defaultLimit", 10),
-
     );
-    $hotSpotHours = Arr::get(
+    $hotSpotHours = $this->getFilteredParam(
       $queryParams,
       'hotSpotHours',
       $this->getSettings("liplum-trends.defaultHotSpotHours", 24),
@@ -126,5 +126,14 @@ class TrendsRecentController implements RequestHandlerInterface
   private function getSettings(string $key, $default = null)
   {
     return $this->settings->get($key, $default);
+  }
+
+  private function getFilteredParam(array $queryParams, string $key, $default)
+  {
+    return filter_var(
+      Arr::get($queryParams, $key, $default),
+      FILTER_VALIDATE_INT,
+      ['options' => ['default' => $default]]
+    );
   }
 }
