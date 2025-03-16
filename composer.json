@@ -1,7 +1,6 @@
 {
   "name": "liplum/flarum-trends",
   "description": "The trending discussions for Flarum",
-  "version": "0.1.0",
   "keywords": [
     "flarum",
     "flarum-extension",
