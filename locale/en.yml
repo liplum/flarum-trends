@@ -2,10 +2,10 @@ liplum-trends:
   admin:
     defaultRecentDays:
       label: Default Recent Days
-      help: The number of days to consider for recent discussions.
+      help: The number of days to consider for recent discussions. 7 by default.
     defaultLimit:
       label: Default Discussion Limit
-      help: The maximum number of discussions to return.
+      help: The maximum number of discussions to return. 10 by default.
     defaultHotSpotHours:
       label: Default Hot Spot Hours
-      help: The number of hours to consider for recent hot spot activity. Discussions with activity within this timeframe will have a higher weight in the ranking.
+      help: The number of hours to consider for recent hot spot activity. Discussions with activity within this timeframe will have a higher weight in the ranking. 24 by default.
