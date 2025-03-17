@@ -74,13 +74,11 @@ class TrendsRecentController implements RequestHandlerInterface
       $this->getSettings("liplum-trends.defaultLimit", 10),
     );
 
-    // Calculate time threshold
-
     // Define weights and decay factor
-    $weightComment = 1.0;
-    $weightParticipant = 0.8;
-    $weightView = 0.5;
-    $decay_lambda = 0.001;
+    $commentWeight = $this->getSettings("liplum-trends.commentWeight", 1.0);
+    $participantWeight = $this->getSettings("liplum-trends.participantWeight", 0.8);
+    $viewWeight = $this->getSettings("liplum-trends.viewWeight", 0.5);
+    $decayLambda = $this->getSettings("liplum-trends.decayLambda", 0.001);
 
     // Calculate time decay
     $now = Carbon::now();
@@ -90,7 +88,7 @@ class TrendsRecentController implements RequestHandlerInterface
       ->where('is_private', 0)
       ->where('is_locked', 0)
       ->selectRaw(
-        '*, (' . $weightComment . ' * comment_count) + (' . $weightParticipant . ' * participant_count) + (' . $weightView . ' * view_count) - (EXP(-' . $decay_lambda . ' * TIMESTAMPDIFF(SECOND, created_at, ?))) as trending_score',
+        '*, (' . $commentWeight . ' * comment_count) + (' . $participantWeight . ' * participant_count) + (' . $viewWeight . ' * view_count) - (EXP(-' . $decayLambda . ' * TIMESTAMPDIFF(SECOND, created_at, ?))) as trending_score',
         [$now]
       )
       ->orderByDesc('trending_score')
