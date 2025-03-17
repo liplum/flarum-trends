@@ -6,7 +6,10 @@ A [Flarum](http://flarum.org) extension to serve API for trending discussions.
 
 ### Installation
 
+To install the dependencies for this extension, run the following commands:
+
 ```bash
+composer require michaelbelgium/flarum-discussion-views
 composer require liplum/flarum-trends
 ```
 
@@ -26,88 +29,122 @@ This extension provides an API endpoint to retrieve trending discussions based o
 
 ### Query Parameters
 
-* **`recentDays` (integer, optional):** The number of days to consider for recent discussions. Defaults to `7`.
 * **`limit` (integer, optional):** The maximum number of discussions to return. Defaults to `10`.
-* **`hotSpotHours` (integer, optional):** The number of hours to consider for recent hot spot activity. Discussions with activity within this timeframe will have a higher weight in the ranking. Defaults to `24`.
 
 ### Response
 
 The API returns a JSON array of discussion objects. Each discussion object contains the following properties:
 
-* **`id` (integer):** The discussion ID.
+* **`id` (string):** The discussion ID.
 * **`title` (string):** The discussion title.
 * **`commentCount` (integer):** The number of comments in the discussion.
+* **`participantCount` (integer):** The number of participants in the discussion.
+* **`viewCount` (integer):** The number of views of the discussion.
 * **`createdAt` (string):** The creation time of the discussion in ISO 8601 format.
-* **`lastActivityAt` (string):** The last activity time of the discussion in ISO 8601 format, using the created time if the last posted time is null.
+* **`lastActivityAt` (string):** The last activity time of the discussion in ISO 8601 format.
 * **`shareUrl` (string):** The URL to share the discussion.
+* **`trendingScore` (number):** The trending score of the discussion.
 * **`user` (object):** An object containing the user's ID and username.
-  * **`id` (integer):** The user ID.
+  * **`id` (string):** The user ID.
   * **`username` (string):** The username.
 
 ### Typing
 
 ```ts
 interface TrendingDiscussionsResponse {
-  data: {
-    type: 'discussions';
-    id: string;
-    attributes: {
-      title: string;
-      commentCount: number;
-      createdAt: string;
-      lastActivityAt: string;
-      shareUrl: string;
-    };
-    relationships: {
-      user: {
-        data: {
-          type: 'users';
-          id: string;
-          attributes: {
-            username: string;
-          };
+  data: TrendingDiscussion[];
+}
+
+interface TrendingDiscussion {
+  type: 'discussions';
+  id: string;
+  attributes: {
+    title: string;
+    commentCount: number;
+    participantCount: number;
+    viewCount: number;
+    createdAt: string;
+    lastActivityAt: string;
+    shareUrl: string;
+    trendingScore: number;
+  };
+  relationships: {
+    user: {
+      data: {
+        type: 'users';
+        id: string;
+        attributes: {
+          username: string;
         };
       };
     };
-  }[];
+  };
 }
 ```
 
 ### Example Request
 
 ```http
-GET /api/trends/recent?recentDays=14&limit=5&hotSpotHours=12
+GET /api/trends/recent?limit=5
 ```
 
 ### Example Response
 
 ```json
-[
-  {
-    "id": 123,
-    "title": "Discussion Title 1",
-    "commentCount": 50,
-    "createdAt": "2023-10-27T10:00:00+00:00",
-    "lastActivityAt": "2023-10-27T11:30:00+00:00",
-    "shareUrl": "https://discuss.flarum.org/d/123",
-    "user": {
-      "id": 1,
-      "username": "user1"
+{
+  "data": [
+    {
+      "type": "discussions",
+      "id": "123",
+      "attributes": {
+        "title": "Discussion Title 1",
+        "commentCount": 50,
+        "participantCount": 20,
+        "viewCount": 1000,
+        "createdAt": "2023-10-27T10:00:00+00:00",
+        "lastActivityAt": "2023-10-27T11:30:00+00:00",
+        "shareUrl": "https://discuss.flarum.org/d/123",
+        "trendingScore": 1234.56
+      },
+      "relationships": {
+        "user": {
+          "data": {
+            "type": "users",
+            "id": "1",
+            "attributes": {
+              "username": "user1"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "discussions",
+      "id": "456",
+      "attributes": {
+        "title": "Discussion Title 2",
+        "commentCount": 30,
+        "participantCount": 15,
+        "viewCount": 750,
+        "createdAt": "2023-10-26T15:30:00+00:00",
+        "lastActivityAt": "2023-10-26T15:30:00+00:00",
+        "shareUrl": "https://discuss.flarum.org/d/456",
+        "trendingScore": 876.54
+      },
+      "relationships": {
+        "user": {
+          "data": {
+            "type": "users",
+            "id": "2",
+            "attributes": {
+              "username": "user2"
+            }
+          }
+        }
+      }
     }
-  },
-  {
-    "id": 456,
-    "title": "Discussion Title 2",
-    "commentCount": 30,
-    "createdAt": "2023-10-26T15:30:00+00:00",
-    "lastActivityAt": "2023-10-26T15:30:00+00:00",
-    "shareUrl": "https://discuss.flarum.org/d/456",
-    "user": {
-      "id": 2,
-      "username": "user2"
-    }
-  },
-]
+  ]
+}
 ```
 
 ### Notes
