@@ -15,6 +15,7 @@
   "require": {
     "flarum/core": "^1.2",
     "guzzlehttp/guzzle": "^7.0",
+    "michaelbelgium/flarum-discussion-views": "*",
     "ext-json": "*"
   },
   "authors": [
