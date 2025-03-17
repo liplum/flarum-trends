@@ -160,12 +160,10 @@ Where:
 * $W_v$: Weight assigned to view count.
 * $N_v$: Number of views of the discussion.
 * $\lambda$: Decay factor that controls the rate of time decay.
-* $\Delta t$: Time difference between the current time and the created_at time.
+* $\Delta t$: Time difference between the current time and the creation time of discussion.
 
 The trending score is calculated for each discussion, and discussions are then sorted in descending order based on their scores.
 
 ### Notes
 
 * Hidden, locked, and private discussions are excluded from the results.
-* The ranking is based on comment count, with a higher weight given to discussions with recent activity within the specified `hotSpotHours`.
-* You can customize the number of days, limit of discussions and hot spot hours using the query parameters.
