@@ -5,21 +5,33 @@ app.initializers.add(extName, () => {
   app.extensionData
     .for(extName)
     .registerSetting({
-      setting: `${extName}.defaultRecentDays`,
-      label: app.translator.trans(`${extName}.admin.defaultRecentDays.label`),
-      help: app.translator.trans(`${extName}.admin.defaultRecentDays.help`),
-      type: `number`
-    })
-    .registerSetting({
       setting: `${extName}.defaultLimit`,
       label: app.translator.trans(`${extName}.admin.defaultLimit.label`),
       help: app.translator.trans(`${extName}.admin.defaultLimit.help`),
       type: `number`
     })
     .registerSetting({
-      setting: `${extName}.defaultHotSpotHours`,
-      label: app.translator.trans(`${extName}.admin.defaultHotSpotHours.label`),
-      help: app.translator.trans(`${extName}.admin.defaultHotSpotHours.help`),
+      setting: `${extName}.commentWeight`,
+      label: app.translator.trans(`${extName}.admin.commentWeight.label`),
+      help: app.translator.trans(`${extName}.admin.commentWeight.help`),
+      type: `number`
+    })
+    .registerSetting({
+      setting: `${extName}.participantWeight`,
+      label: app.translator.trans(`${extName}.admin.participantWeight.label`),
+      help: app.translator.trans(`${extName}.admin.participantWeight.help`),
+      type: `number`
+    })
+    .registerSetting({
+      setting: `${extName}.viewWeight`,
+      label: app.translator.trans(`${extName}.admin.viewWeight.label`),
+      help: app.translator.trans(`${extName}.admin.viewWeight.help`),
+      type: `number`
+    })
+    .registerSetting({
+      setting: `${extName}.decayLambda`,
+      label: app.translator.trans(`${extName}.admin.decayLambda.label`),
+      help: app.translator.trans(`${extName}.admin.decayLambda.help`),
       type: `number`
     })
 });

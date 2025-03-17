@@ -1,7 +1,7 @@
 {
   "name": "@liplum/flarum-trends",
   "private": true,
-  "version": "0.2",
+  "version": "0.2.0",
   "type": "module",
   "devDependencies": {
     "flarum-tsconfig": "^1.0",
