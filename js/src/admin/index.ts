@@ -29,9 +29,9 @@ app.initializers.add(extName, () => {
       type: `number`
     })
     .registerSetting({
-      setting: `${extName}.decayLambda`,
-      label: app.translator.trans(`${extName}.admin.decayLambda.label`),
-      help: app.translator.trans(`${extName}.admin.decayLambda.help`),
+      setting: `${extName}.daysLimit`,
+      label: app.translator.trans(`${extName}.admin.daysLimit.label`),
+      help: app.translator.trans(`${extName}.admin.daysLimit.help`),
       type: `number`
     })
 });

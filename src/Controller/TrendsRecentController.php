@@ -12,27 +12,6 @@ use Illuminate\Support\Arr;
 use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
 
-/**
- * Controller to retrieve trending discussions based on a weighted algorithm.
- *
- * Trending Score Formula:
- *
- * Trending Score = (weight_comment * comment_count) + (weight_participant * participant_count) + (weight_view * view_count) - (time_decay_func)
- *
- * time_decay_func: e^(-lambda * time_difference_in_seconds)
- *
- * Where:
- * - weight_comment: Weight assigned to comment count.
- * - comment_count: Number of comments in the discussion.
- * - weight_participant: Weight assigned to participant count.
- * - participant_count: Number of participants in the discussion.
- * - weight_view: Weight assigned to view count.
- * - view_count: Number of views of the discussion.
- * - lambda: Decay factor that controls the rate of time decay.
- * - time_difference_in_seconds: Time difference between the current time and the created_at time.
- *
- * The trending score is calculated for each discussion, and discussions are then sorted in descending order based on their scores.
- */
 class TrendsRecentController implements RequestHandlerInterface
 {
   private $settings;
@@ -78,18 +57,20 @@ class TrendsRecentController implements RequestHandlerInterface
     $commentWeight = $this->getSettings("liplum-trends.commentWeight", 1.0);
     $participantWeight = $this->getSettings("liplum-trends.participantWeight", 0.8);
     $viewWeight = $this->getSettings("liplum-trends.viewWeight", 0.5);
-    $decayLambda = $this->getSettings("liplum-trends.decayLambda", 0.001);
+    $hoursLimit = max($this->getSettings("liplum-trends.daysLimit", 30) * 24, 1);
 
     // Calculate time decay
     $now = Carbon::now();
+    $hoursLimitThreshold = Carbon::now()->subHours($hoursLimit);
 
     $discussions = $this->discussions->query()
       ->whereNull('hidden_at')
       ->where('is_private', 0)
       ->where('is_locked', 0)
+      ->where('created_at', '>=', $hoursLimitThreshold)
       ->selectRaw(
-        '*, (? * comment_count) + (? * participant_count) + (? * view_count) - (EXP(-? * TIMESTAMPDIFF(SECOND, created_at, ?))) as trending_score',
-        [$commentWeight, $participantWeight, $viewWeight, $decayLambda, $now]
+        '*, (? * comment_count) + (? * participant_count) + (? * view_count) * POW(1 - (TIMESTAMPDIFF(HOUR, created_at, ?) / ?), 2) as trending_score',
+        [$commentWeight, $participantWeight, $viewWeight, $now, $hoursLimit]
       )
       ->orderByDesc('trending_score')
       ->take($discussionLimit)

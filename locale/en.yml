@@ -3,6 +3,9 @@ liplum-trends:
     defaultLimit:
       label: Default Discussion Limit
       help: The maximum number of discussions to return. 10 by default.
+    hoursLimit:
+      label: Trending Time Window (Hours)
+      help: The time window in hours within which discussions are considered for trending. Older discussions will have their trending scores decay to zero within this time.
     commentWeight:
       label: Comment Weight
       help: Weight assigned to the comment count in the trending score calculation.
@@ -12,6 +15,3 @@ liplum-trends:
     viewWeight:
       label: View Weight
       help: Weight assigned to the view count in the trending score calculation.
-    decayLambda:
-      label: Decay Lambda
-      help: Decay factor that controls the rate of time decay in the trending score calculation. A smaller value results in slower decay.

@@ -149,7 +149,9 @@ GET /api/trends/recent?limit=5
 
 ### Trending Score Formula
 
-$S$ = ($W_c \times N_c$) + ($W_p \times N_p$) + ($W_v \times N_v$) - $e^{-\lambda \Delta t}$
+$V$ = ($W_c \times N_c$) + ($W_p \times N_p$) + ($W_v \times N_v$)
+
+$S$ = $V \times D(days)$
 
 Where:
 
@@ -159,8 +161,7 @@ Where:
 * $N_p$: Number of participants in the discussion.
 * $W_v$: Weight assigned to view count.
 * $N_v$: Number of views of the discussion.
-* $\lambda$: Decay factor that controls the rate of time decay.
-* $\Delta t$: Time difference between the current time and the creation time of discussion.
+* $D(days)$: Decay factor that controls the rate of time decay. It gradually reduces the score over time, reaching zero at the specified time limit.
 
 The trending score is calculated for each discussion, and discussions are then sorted in descending order based on their scores.
 

@@ -23,6 +23,6 @@ return [
     ->default('liplum-trends.commentWeight', 1.0)
     ->default('liplum-trends.participantWeight', 0.8)
     ->default('liplum-trends.viewWeight', 0.5)
-    ->default('liplum-trends.decayLambda', 0.001)
+    ->default('liplum-trends.daysLimit', 30)
     ,
 ];
