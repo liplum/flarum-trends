@@ -1,11 +1,17 @@
 liplum-trends:
   admin:
-    defaultRecentDays:
-      label: Default Recent Days
-      help: The number of days to consider for recent discussions. 7 by default.
     defaultLimit:
       label: Default Discussion Limit
       help: The maximum number of discussions to return. 10 by default.
-    defaultHotSpotHours:
-      label: Default Hot Spot Hours
-      help: The number of hours to consider for recent hot spot activity. Discussions with activity within this timeframe will have a higher weight in the ranking. 24 by default.
+    commentWeight:
+      label: Comment Weight
+      help: Weight assigned to the comment count in the trending score calculation.
+    participantWeight:
+      label: Participant Weight
+      help: Weight assigned to the participant count in the trending score calculation.
+    viewWeight:
+      label: View Weight
+      help: Weight assigned to the view count in the trending score calculation.
+    decayLambda:
+      label: Decay Lambda
+      help: Decay factor that controls the rate of time decay in the trending score calculation. A smaller value results in slower decay.
