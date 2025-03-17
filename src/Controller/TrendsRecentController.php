@@ -13,11 +13,25 @@ use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
 
 /**
- * Controller to retrieve trending discussions based on recent activity.
+ * Controller to retrieve trending discussions based on a weighted algorithm.
  *
- * This controller fetches discussions created within a specified recent timeframe,
- * with a higher weight given to discussions that have received activity within a
- * recent hot spot timeframe.
+ * Trending Score Formula:
+ *
+ * Trending Score = (weight_comment * comment_count) + (weight_participant * participant_count) + (weight_view * view_count) - (time_decay_func)
+ *
+ * time_decay_func: e^(-lambda * time_difference_in_seconds)
+ *
+ * Where:
+ * - weight_comment: Weight assigned to comment count.
+ * - comment_count: Number of comments in the discussion.
+ * - weight_participant: Weight assigned to participant count.
+ * - participant_count: Number of participants in the discussion.
+ * - weight_view: Weight assigned to view count.
+ * - view_count: Number of views of the discussion.
+ * - lambda: Decay factor that controls the rate of time decay.
+ * - time_difference_in_seconds: Time difference between the current time and the created_at time.
+ *
+ * The trending score is calculated for each discussion, and discussions are then sorted in descending order based on their scores.
  */
 class TrendsRecentController implements RequestHandlerInterface
 {
@@ -54,34 +68,32 @@ class TrendsRecentController implements RequestHandlerInterface
   {
     // Parse query parameters with default values
     $queryParams = $request->getQueryParams();
-
-    $recentDays = $this->getFilteredParam(
-      $queryParams,
-      'recentDays',
-      $this->getSettings("liplum-trends.defaultRecentDays", 7),
-    );
     $discussionLimit = $this->getFilteredParam(
       $queryParams,
       'limit',
       $this->getSettings("liplum-trends.defaultLimit", 10),
     );
-    $hotSpotHours = $this->getFilteredParam(
-      $queryParams,
-      'hotSpotHours',
-      $this->getSettings("liplum-trends.defaultHotSpotHours", 24),
-    );
 
-    // Calculate time thresholds
-    $recentThreshold = Carbon::now()->subDays($recentDays);
-    $hotSpotThreshold = Carbon::now()->subHours($hotSpotHours);
+    // Calculate time threshold
 
-    // Query trending discussions
+    // Define weights and decay factor
+    $weightComment = 1.0;
+    $weightParticipant = 0.8;
+    $weightView = 0.5;
+    $decay_lambda = 0.001;
+
+    // Calculate time decay
+    $now = Carbon::now();
+
     $discussions = $this->discussions->query()
       ->whereNull('hidden_at')
       ->where('is_private', 0)
       ->where('is_locked', 0)
-      ->where('created_at', '>=', $recentThreshold)
-      ->orderByRaw('CASE WHEN last_posted_at >= ? THEN comment_count * 2 ELSE comment_count END DESC', [$hotSpotThreshold])
+      ->selectRaw(
+        '*, (' . $weightComment . ' * comment_count) + (' . $weightParticipant . ' * participant_count) + (' . $weightView . ' * view_count) - (EXP(-' . $decay_lambda . ' * TIMESTAMPDIFF(SECOND, created_at, ?))) as trending_score',
+        [$now]
+      )
+      ->orderByDesc('trending_score')
       ->take($discussionLimit)
       ->get();
 
@@ -89,7 +101,6 @@ class TrendsRecentController implements RequestHandlerInterface
       'data' => []
     ];
     foreach ($discussions as $discussion) {
-      // Use created_at if last_posted_at is null
       $lastActivity = $discussion->last_posted_at ?? $discussion->created_at;
       $data['data'][] = [
         'type' => 'discussions',
@@ -97,9 +108,12 @@ class TrendsRecentController implements RequestHandlerInterface
         'attributes' => [
           'title' => $discussion->title,
           'commentCount' => $discussion->comment_count,
+          'participantCount' => $discussion->participant_count,
+          'viewCount' => $discussion->view_count,
           'createdAt' => $discussion->created_at->toIso8601String(),
           'lastActivityAt' => $lastActivity->toIso8601String(),
           'shareUrl' => $this->url->to('forum')->route('discussion', ['id' => $discussion->id]),
+          'trendingScore' => $discussion->trending_score,
         ],
         'relationships' => [
           'user' => [
