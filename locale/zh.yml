@@ -3,9 +3,9 @@ liplum-trends:
     defaultLimit:
       label: 默认讨论数量限制
       help: 返回的最大讨论数量。默认为 10。
-    hoursLimit:
-      label: 热门时间窗口（小时）
-      help: 讨论被视为热门的时间窗口（以小时为单位）。超过此时限的旧讨论的热度得分将衰减至零。
+    daysLimit:
+      label: 热门时间窗口（天）
+      help: 讨论被视为热门的时间窗口（以天为单位）。超过此时限的旧讨论的热度得分将衰减至零。
     commentWeight:
       label: 评论权重
       help: 在热门得分计算中分配给评论数的权重。
