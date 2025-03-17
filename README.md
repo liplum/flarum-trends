@@ -147,6 +147,23 @@ GET /api/trends/recent?limit=5
 }
 ```
 
+### Trending Score Formula
+
+$S$ = ($W_c \times N_c$) + ($W_p \times N_p$) + ($W_v \times N_v$) - $e^{-\lambda \Delta t}$
+
+Where:
+
+* $W_c$: Weight assigned to comment count.
+* $N_c$: Number of comments in the discussion.
+* $W_p$: Weight assigned to participant count.
+* $N_p$: Number of participants in the discussion.
+* $W_v$: Weight assigned to view count.
+* $N_v$: Number of views of the discussion.
+* $\lambda$: Decay factor that controls the rate of time decay.
+* $\Delta$: Time difference between the current time and the created_at time.
+
+The trending score is calculated for each discussion, and discussions are then sorted in descending order based on their scores.
+
 ### Notes
 
 * Hidden, locked, and private discussions are excluded from the results.
