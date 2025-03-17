@@ -88,8 +88,8 @@ class TrendsRecentController implements RequestHandlerInterface
       ->where('is_private', 0)
       ->where('is_locked', 0)
       ->selectRaw(
-        '*, (' . $commentWeight . ' * comment_count) + (' . $participantWeight . ' * participant_count) + (' . $viewWeight . ' * view_count) - (EXP(-' . $decayLambda . ' * TIMESTAMPDIFF(SECOND, created_at, ?))) as trending_score',
-        [$now]
+        '*, (? * comment_count) + (? * participant_count) + (? * view_count) - (EXP(-? * TIMESTAMPDIFF(SECOND, created_at, ?))) as trending_score',
+        [$commentWeight, $participantWeight, $viewWeight, $decayLambda, $now]
       )
       ->orderByDesc('trending_score')
       ->take($discussionLimit)
