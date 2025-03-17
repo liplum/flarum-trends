@@ -160,7 +160,7 @@ Where:
 * $W_v$: Weight assigned to view count.
 * $N_v$: Number of views of the discussion.
 * $\lambda$: Decay factor that controls the rate of time decay.
-* $\Delta$: Time difference between the current time and the created_at time.
+* $\Delta t$: Time difference between the current time and the created_at time.
 
 The trending score is calculated for each discussion, and discussions are then sorted in descending order based on their scores.
 
