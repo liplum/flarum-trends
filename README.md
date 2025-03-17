@@ -149,9 +149,7 @@ GET /api/trends/recent?limit=5
 
 ### Trending Score Formula
 
-$V$ = ($W_c \times N_c$) + ($W_p \times N_p$) + ($W_v \times N_v$)
-
-$S$ = $V \times D(days)$
+$S$ = [($W_c \times N_c$) + ($W_p \times N_p$) + ($W_v \times N_v$)] $\times D(days)$
 
 Where:
 
